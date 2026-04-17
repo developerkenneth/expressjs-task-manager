@@ -1,0 +1,1 @@
+const connectionString = "mongodb+srv://developerkenneth9696_db_user:<db_password>@taskmanagerproject.2rzzn7l.mongodb.net/?appName=taskManagerProject";
