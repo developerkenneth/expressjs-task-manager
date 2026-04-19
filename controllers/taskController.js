@@ -1,3 +1,4 @@
+const taskModel = require("../models/Task");
 
 
 function index(req, res) {
@@ -7,11 +8,11 @@ function index(req, res) {
     });
 }
 
-function create(req, res) {
-
-    return res.json({
-        message: "created successfully"
-    })
+async function create(req, res) {
+    const createdTask = await taskModel.create(req.body);
+    return res.status(201).json({
+        task: createdTask
+    });
 }
 
 
