@@ -1,18 +1,42 @@
+const { response } = require("express");
 const taskModel = require("../models/Task");
 
 
-function index(req, res) {
-    return res.json({
-        message: "all items has been fetched",
-        success: true,
-    });
+async function index(req, res) {
+    try {
+        const tasks = await taskModel.find({});
+
+        return res.status(200).json({
+            tasks,
+            message: "all items has been fetched",
+            success: true,
+
+        });
+        process.exit(0);
+    } catch (error) {
+        return res.status(500).json(
+            error.errors
+        );
+        process.exit(0);
+
+    }
+
 }
 
 async function create(req, res) {
-    const createdTask = await taskModel.create(req.body);
-    return res.status(201).json({
-        task: createdTask
-    });
+    try {
+
+        const createdTask = await taskModel.create(req.body);
+        return res.status(201).json({
+            task: createdTask
+        });
+        process.exit(0);
+
+    } catch (err) {
+        return res.status(500).json(err.errors.name);
+        process.exit(0);
+    }
+
 }
 
 
@@ -24,19 +48,62 @@ function update(req, res) {
 }
 
 
-function show(req, res) {
+async function show(req, res) {
 
-    return res.json({
-        message: "show successfully"
-    })
+    const { id } = req.params;
+    if (id) {
+
+        try {
+            const task = await taskModel.findOne({ _id: id });
+            return res.json({
+                task,
+                message: "show successfully"
+            });
+        } catch (err) {
+            return res.status(500).json(err);
+            process.exit(0);
+        }
+
+    }
+
+    return res.status(400).json({
+        success: false,
+        message: "kindly provide an id"
+    });
+    process.exit(0);
+
 }
 
 
-function destroy(req, res) {
+async function destroy(req, res) {
+    const taskId = req.params.id;
+    if (taskId) {
+        try {
+            const deleted = await taskModel.findOneAndDelete({ _id: taskId });
+            return res.status(200).json({
+                message: "deleted successfully",
+                task: deleted
+            });
+            process.exit(0);
 
-    return res.json({
-        message: "deleted successfully"
-    })
+        } catch (err) {
+            return res.status(500).json({
+                success: false,
+                error: err
+            });
+            process.exit(0);
+        }
+
+    }
+
+    return res.status(400).json({
+        success: false,
+        message: "kindly provide an id"
+    });
+    process.exit(0);
+
+
+
 }
 module.exports = {
     index,
