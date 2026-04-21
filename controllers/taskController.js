@@ -26,7 +26,7 @@ async function index(req, res) {
 async function create(req, res) {
     try {
 
-        const createdTask = await taskModel.create(req.body);
+        const createdTask = await taskModel.create(req.body, {runValidators: true});
         return res.status(201).json({
             task: createdTask
         });
@@ -40,11 +40,36 @@ async function create(req, res) {
 }
 
 
-function update(req, res) {
+async function update(req, res) {
+    const { id } = req.params;
+    try {
+        const task = await taskModel.findByIdAndUpdate({
+            _id: id
+        }, req.body, { new : true, runValidators});
 
-    return res.json({
-        message: "updated successfully"
-    })
+        if (!task) {
+            return res.status(400).
+                json({
+                    error: "invalid task id",
+                    sucess: false
+                });
+            process.exit(0);
+        }
+
+        return res.json({
+            message: "updated successfully",
+            success: true,
+            task
+        });
+
+        process.exit(0);
+
+    } catch (err) {
+        return res.status(500).
+            json(err);
+        process.exit(0);
+    }
+
 }
 
 
