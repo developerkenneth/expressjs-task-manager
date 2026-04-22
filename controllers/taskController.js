@@ -26,7 +26,7 @@ async function index(req, res) {
 async function create(req, res) {
     try {
 
-        const createdTask = await taskModel.create(req.body, {runValidators: true});
+        const createdTask = await taskModel.create(req.body);
         return res.status(201).json({
             task: createdTask
         });

@@ -5,6 +5,13 @@ require("dotenv").config();
 
 const PORT = 5000;
 const taskRouter = require("./routes/tasks");
+app.use(express.static("./public"));
+
+// adding the express json middleware 
+app.use(express.json());
+
+// 2. If you are sending data via HTML Forms (url-encoded), add this too:
+app.use(express.urlencoded({ extended: false }));
 
 async function start() {
     try {
@@ -16,8 +23,7 @@ async function start() {
         console.log(error);
     }
 }
-// adding the express json middleware 
-app.use(express.json());
+
 
 // using the task router here
 app.use("/api/tasks", taskRouter);
