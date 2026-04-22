@@ -48,12 +48,15 @@ const deleteTasks = () => {
     const allTask = document.querySelectorAll(".del");
     allTask.forEach((task) => {
         task.addEventListener("click", (e) => {
-            const task = e.currentTarget;
-            const taskId = task.dataset.id;
-            handleDeleteTask(taskId);
-
-            // this will remove the li
-            task.parentElement.parentElement.remove();
+            e.preventDefault();
+            const feedBack = confirm("are you sure you want to delete this task");
+            if (feedBack) {
+                const task = e.currentTarget;
+                const taskId = task.dataset.id;
+                handleDeleteTask(taskId);
+                // this will remove the li
+                task.parentElement.parentElement.remove();
+            }
         })
     });
 }
@@ -125,7 +128,7 @@ form.addEventListener("submit",
 
 
 
-s
+        s
     });
 
 
