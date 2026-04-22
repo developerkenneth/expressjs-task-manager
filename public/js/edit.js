@@ -1,4 +1,10 @@
+import axios from 'https://cdn.skypack.dev/axios';
 
+const task = document.querySelector("#task");
+const completed = document.querySelector("#completed");
+const msg = document.querySelector("#msg");
+
+console.log(task);
 const urlParams = new URLSearchParams(window.location.search);
 
 // Get a specific value
@@ -7,21 +13,19 @@ const id = urlParams.get('id');
 
 function displayTask(taskData) {
 
-    const task = document.querySelector("#task");
-    const completed = document.querySelector("#completed");
-
     task.value = taskData.name;
     completed.checked = taskData.completed;
 
-
 }
+
 const getTask = async () => {
     try {
         const url = `http://localhost:5000/api/tasks/${id}`;
         const response = await axios.get(url);
-        const tasks = response.data.tasks;
+        const task = response.data.task;
 
-        displayTask(tasks);
+        console.log(task);
+        displayTask(task);
 
     } catch (error) {
         console.error(error);
@@ -30,6 +34,7 @@ const getTask = async () => {
 
 
 const form = document.querySelector("form");
+
 form.addEventListener("submit",
     async function (e) {
         e.preventDefault();
@@ -42,12 +47,32 @@ form.addEventListener("submit",
             try {
                 const url = `http://localhost:5000/api/tasks/${id}`;
                 const response = await axios.put(url, { name: task, completed: completed });
-                console.log(response.data);
-                // display task
-                getTask();
+
+                msg.textContent = "updated task successfully";
+                msg.classList.add("success");
+                msg.classList.remove("hidden");
+
+                setTimeout(function () {
+                    msg.classList.remove("success");
+                    msg.classList.add("hidden");
+                }, 5000);
+                return;
+
 
 
             } catch (error) {
+
+                msg.textContent = "failed to update task";
+                msg.classList.add("error");
+                msg.classList.remove("hidden");
+
+                setTimeout(function () {
+                    msg.classList.remove("error");
+                    msg.classList.add("hidden");
+                }, 5000);
+                return;
+
+
 
             }
         }
@@ -55,3 +80,4 @@ form.addEventListener("submit",
 
 
     });
+getTask();

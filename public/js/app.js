@@ -1,8 +1,7 @@
 import axios from 'https://cdn.skypack.dev/axios';
-
-
 const ul = document.querySelector("ul");
 const form = document.querySelector("form");
+const msg = document.querySelector("#msg");
 
 
 function displayTasks(tasks) {
@@ -85,18 +84,48 @@ form.addEventListener("submit",
             try {
                 const url = "http://localhost:5000/api/tasks"
                 const response = await axios.post(url, { name: task });
-                console.log(response.data);
+                msg.textContent = "added task successfully";
+                msg.classList.add("success");
+                msg.classList.remove("hidden");
+
+                setTimeout(function () {
+                    msg.classList.remove("success");
+                    msg.classList.add("hidden");
+                }, 5000);
                 // display task
                 getTask();
+                return;
 
 
             } catch (error) {
+                msg.textContent = "failed to add task";
+                msg.classList.add("error");
+                msg.classList.remove("hidden");
+
+                setTimeout(function () {
+                    msg.classList.remove("error");
+                    msg.classList.add("hidden");
+                }, 5000);
+                return;
 
             }
         }
 
 
+        msg.textContent = "please enter the name of the task";
+        msg.classList.add("error");
+        msg.classList.remove("hidden");
 
+        setTimeout(function () {
+            msg.classList.remove("error");
+            msg.classList.add("hidden");
+        }, 5000);
+
+        return;
+
+
+
+s
     });
 
 

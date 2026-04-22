@@ -97,3 +97,21 @@ li {
 .del{
     cursor: pointer;
 }
+
+#msg{
+  text-align: center;
+  font-size: small;
+}
+
+
+.error{
+  color: red;
+}
+
+.success{
+  color: rgba(9, 237, 55, 0.878);
+}
+
+.hidden{
+  display: none;
+}

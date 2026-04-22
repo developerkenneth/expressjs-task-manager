@@ -42,10 +42,11 @@ async function create(req, res) {
 
 async function update(req, res) {
     const { id } = req.params;
+
     try {
         const task = await taskModel.findByIdAndUpdate({
             _id: id
-        }, req.body, { new : true, runValidators});
+        }, req.body, { new : true, runValidators: true});
 
         if (!task) {
             return res.status(400).
