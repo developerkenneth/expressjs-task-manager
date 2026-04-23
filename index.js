@@ -3,7 +3,12 @@ const connectDB = require("./db/connect");
 const app = express();
 require("dotenv").config();
 
-const PORT = 5000;
+const errorHandlerMiddleware = require("./middlewares/errorHandlerMiddleware");
+
+
+// getting default port from hosting
+
+const PORT = process.env.PORT || 5000;
 const taskRouter = require("./routes/tasks");
 app.use(express.static("./public"));
 
@@ -32,6 +37,7 @@ app.get("/", (req, res) => {
     return res.send("hello world");
 });
 
+app.use(errorHandlerMiddleware);
 
 start();
 

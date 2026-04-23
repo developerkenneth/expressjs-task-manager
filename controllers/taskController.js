@@ -1,136 +1,90 @@
 const { response } = require("express");
 const taskModel = require("../models/Task");
+const handleAsync = require("../middlewares/handleAsync");
+
+// getting errors class 
+const { addError, CustomErrors } = require("../classes/CustomErrors");
+
+const index = handleAsync(async (req, res) => {
+
+    const tasks = await taskModel.find({});
+    return res.status(200).json({
+        tasks,
+        message: "all items has been fetched",
+        success: true,
+
+    });
+    
+
+});
+
+const create = handleAsync(async (req, res) => {
+    const createdTask = await taskModel.create(req.body);
+    return res.status(201).json({
+        task: createdTask
+    });
+    
+});
 
 
-async function index(req, res) {
-    try {
-        const tasks = await taskModel.find({});
-
-        return res.status(200).json({
-            tasks,
-            message: "all items has been fetched",
-            success: true,
-
-        });
-        process.exit(0);
-    } catch (error) {
-        return res.status(500).json(
-            error.errors
-        );
-        process.exit(0);
-
-    }
-
-}
-
-async function create(req, res) {
-    try {
-
-        const createdTask = await taskModel.create(req.body);
-        return res.status(201).json({
-            task: createdTask
-        });
-        process.exit(0);
-
-    } catch (err) {
-        return res.status(500).json(err.errors.name);
-        process.exit(0);
-    }
-
-}
-
-
-async function update(req, res) {
+const update = handleAsync(async (req, res) => {
     const { id } = req.params;
+    const task = await taskModel.findByIdAndUpdate({
+        _id: id
+    }, req.body, { new: true, runValidators: true });
 
-    try {
-        const task = await taskModel.findByIdAndUpdate({
-            _id: id
-        }, req.body, { new : true, runValidators: true});
-
-        if (!task) {
-            return res.status(400).
-                json({
-                    error: "invalid task id",
-                    sucess: false
-                });
-            process.exit(0);
-        }
-
-        return res.json({
-            message: "updated successfully",
-            success: true,
-            task
-        });
-
-        process.exit(0);
-
-    } catch (err) {
-        return res.status(500).
-            json(err);
-        process.exit(0);
+    if (!task) {
+        return next(addError('invalid task id', 404));
+        
     }
 
-}
+    return res.json({
+        message: "updated successfully",
+        success: true,
+        task
+    });
+
+    
+
+});
 
 
-async function show(req, res) {
+const show = async (req, res) => {
 
     const { id } = req.params;
     if (id) {
 
-        try {
-            const task = await taskModel.findOne({ _id: id });
-            return res.json({
-                task,
-                message: "show successfully"
-            });
-        } catch (err) {
-            return res.status(500).json(err);
-            process.exit(0);
-        }
+        const task = await taskModel.findOne({ _id: id });
+        return res.json({
+            task,
+            message: "show successfully"
+        });
 
     }
 
-    return res.status(400).json({
-        success: false,
-        message: "kindly provide an id"
-    });
-    process.exit(0);
+    return next(addError('invalid task id', 404));
+    
 
 }
 
 
-async function destroy(req, res) {
+const destroy = handleAsync(async (req, res) => {
     const taskId = req.params.id;
     if (taskId) {
-        try {
-            const deleted = await taskModel.findOneAndDelete({ _id: taskId });
-            return res.status(200).json({
-                message: "deleted successfully",
-                task: deleted
-            });
-            process.exit(0);
 
-        } catch (err) {
-            return res.status(500).json({
-                success: false,
-                error: err
-            });
-            process.exit(0);
-        }
+        const deleted = await taskModel.findOneAndDelete({ _id: taskId });
+        return res.status(200).json({
+            message: "deleted successfully",
+            task: deleted
+        });
+        
 
     }
 
-    return res.status(400).json({
-        success: false,
-        message: "kindly provide an id"
-    });
-    process.exit(0);
+    return next(addError('invalid task id', 404));
+    
 
-
-
-}
+});
 module.exports = {
     index,
     create,
