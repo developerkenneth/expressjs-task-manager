@@ -115,3 +115,15 @@ li {
 .hidden{
   display: none;
 }
+
+.link{
+  display: inline-block;
+  background-color: rgb(47, 125, 235);
+  color: #eee;
+  padding: 10px 15px;
+  border-radius: 3px;
+  font-size: large;
+  width: 100px;
+  margin: 0 auto ;
+  text-align: center;
+}
